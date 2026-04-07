@@ -35,6 +35,40 @@ This project directly maps to the AI governance, risk management, and compliance
 
 ---
 
+## What This Demonstrates (Plain English)
+
+Most companies deploying LLMs have no governance controls. A user can submit a prompt containing their social security number, a bad actor can attempt to jailbreak the model, or outputs can contain biased language — and nobody catches it.
+
+This tool intercepts those inputs, runs four parallel compliance checks (PII, toxicity, prompt injection, bias), maps every finding to the NIST AI Risk Management Framework, and generates a Claude-powered compliance report suitable for senior stakeholder review.
+
+What makes the architecture unique is the use of MCP (Model Context Protocol). Rather than hardcoding governance logic, the checks are exposed as MCP tools that Claude discovers and calls dynamically as an agent. Claude decides which tools to call, executes them, and synthesizes the findings into a structured assessment — genuine agentic behavior over a real compliance workflow.
+
+The output is a governance report that a Chief Risk Officer could present to a regulator.
+
+## MCP Architecture
+
+Governance checks are exposed as MCP tools via src/mcp_server.py. Claude connects as an MCP client, discovers the available tools, and autonomously decides which to call based on the input.
+
+Available MCP tools:
+- screen_for_pii — detects emails, SSNs, phone numbers, credit cards via Microsoft Presidio
+- screen_for_toxicity — detects harmful and profane language
+- screen_for_policy_violations — detects prompt injection and jailbreak attempts
+- screen_for_bias — detects discriminatory language patterns
+- run_full_governance_screen — runs all checks and maps findings to NIST AI RMF
+
+To run the MCP server standalone:
+
+```bash
+python -m src.mcp_server
+```
+
+To run Claude as an MCP client that discovers and calls tools autonomously:
+
+```bash
+python -m src.mcp_client
+```
+---
+
 ## Project Structure and File Explanations
 
 **src/checks.py** — Runs four governance checks on any text. Toxicity detection via better-profanity. PII detection via Microsoft Presidio (catches emails, SSNs, phone numbers, credit cards). Policy violation detection via keyword matching for prompt injection patterns. Bias indicator detection via pattern matching. Returns a structured result with flagged status and risk score for each check.
