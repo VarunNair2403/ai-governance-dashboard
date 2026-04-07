@@ -12,7 +12,7 @@ This tool fills that gap — a real-time AI governance screening layer that chec
 
 ## Why I Built This
 
-I built this as a portfolio project targeting AI governance and AI PM roles at financial institutions like JP Morgan, Goldman Sachs, and BlackRock. The goal was to demonstrate:
+The goal was to demonstrate:
 
 - **AI governance expertise** — real implementation of input/output screening for PII, toxicity, bias, and prompt injection
 - **NIST AI RMF knowledge** — every finding mapped to a specific NIST function and category (GOVERN, MAP, MEASURE, MANAGE)
